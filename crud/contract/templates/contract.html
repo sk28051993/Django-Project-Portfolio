@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+        <script>
+         $(document).ready(
+             function() {
+                 showAllData();
+             }
+         );
+
+         function deleteData(id){
+            if(confirm("You are deleting record!")){
+                $.ajax({
+                 url: "http://127.0.0.1:8000/contract/" + id + '/',
+                 type: 'DELETE',
+                 success: showAllData,
+             });
+            }
+            else{
+              
+            }
+            
+         }
+         function updateData(id){
+             window.location.href = "http://127.0.0.1:8000/contract/update/?id=" + id
+         }
+
+         
+
+         function showAllData(){
+             $("#courses").hide();
+             $.get('http://127.0.0.1:8000/contract/', function(data){
+                 showCourses(data);
+             });
+         }
+
+         function addCourse(){
+             post_data = {
+                  'contract_name': $("#contract_name").val(),
+                  'contract_type': $("#contract_type").val(),
+                  'contract_size': $("#contract_size").val(),
+                  'contract_startDate': $("#contract_startDate").val(),
+                  'contract_endDate': $("#contract_endDate").val(),
+                  'frequency': $("#frequency").val(),
+                  'contract_priceType': $("#priceType").val(),
+                 
+             };
+           
+             $.post('http://127.0.0.1:8000/contract/', post_data, function(data){
+                 showAllData();
+             });
+         }
+
+         function showCourses(edatas) {
+             $("#courserows").html("")
+             $.each(edatas,
+                    function(idx, data) {
+                        $("#courserows").append("<tr><td>" + data.contract_name + "</td><td>" +
+                                                data.contract_type + "</td><td>" +
+                                                data.contract_size + "</td><td>" +
+                                                data.contract_startDate + "</td><td>" +
+                                                data.contract_endDate + "</td><td>" +
+                                                data.frequency + "</td><td>" +
+                                                data.contract_priceType + "</td><td>" +
+                                                data.created + "</td><td>" +
+                                                data.updated + "</td><td>" +
+                                                "<button type='button' onclick='deleteData(" + data.id +")'>Delete</button></td><td><button type='button' onclick='updateData(" + data.id +")'>Update</button></td></tr>");
+                    }
+             );
+             $("#courses").show();
+         }
+        </script>
+    </head>
+    <body>
+        <div style="background-color:navy;color:white;font-family:arial;font-size:20pt;font-weight:bold">Contract Table</div>
+        <p/>
+        Contract Name : <br/>
+        <input type="text" id="contract_name"/>
+        <br/>
+        Contract Type : <br/>
+        <input type="text" id="contract_type"/>
+        <br/>
+        Contract Size : <br/>
+        <input type="number" id="contract_size"/>
+        <br/>
+        Contract StartDate :
+        <input type="date" id="contract_startDate"/>
+        <br/>
+        Contract EndDate :
+        <input type="date" id="contract_endDate"/>
+        <br/>
+        Frequency :
+        <select id="frequency" name="frequency">
+            <option value="Peakload">Peakload</option>
+            <option value="Baseload">Baseload</option>
+        </select>
+        <br/>
+        Price Type :
+        <select id="priceType" name="priceType">
+            <option value="Fixed">Fixed</option>
+            <option value="Floating">Floating</option>
+        </select>
+        <br/>
+        <p/>
+        <button onclick="addCourse()">Add </button>
+        <p/>
+
+        <table border="1" cellpadding="5pt" id="courses">
+            <thead>
+                <tr>
+                    <th>contract name</th>
+                    <th>contract type</th>
+                    <th>contract Size</th>
+                    <th>contract startdate</th>
+                    <th>contract enddate</th>
+                    <th>Frequency</th>
+                    <th>PriceType</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Delete</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody id="courserows"></tbody>
+        </table>
+    </body>
+</html>

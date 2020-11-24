@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+        <script>
+         $(document).ready(
+             function() {
+                 var id = window.location.href.split('=')[1];
+                 $.get('http://127.0.0.1:8000/contract/'+id+'/', function(data){
+                     $("#contract_name").val(data.contract_name);
+                     $("#contract_type").val(data.contract_type);
+                     $("#contract_size").val(data.contract_size);
+                     $("#contract_startDate").val(data.contract_startDate);
+                     $("#contract_endDate").val(data.contract_endDate);
+                     $("#frequency").val(data.frequency);
+                     $("#priceType").val(data.contract_priceType);
+                 });
+             }
+         );
+
+         function updateCourse(){
+             var id = window.location.href.split('=')[1];
+             patch = {
+                 'contract_name': $("#contract_name").val(),
+                 'contract_type': $("#contract_type").val(),
+                 'contract_size': $("#contract_size").val(),
+                 'contract_startDate': $("#contract_startDate").val(),
+                 'contract_endDate': $("#contract_endDate").val(),
+                 'frequency': $("#frequency").val(),
+                 'contract_priceType': $("#priceType").val(),
+             };
+             $.ajax({
+                 type: 'PATCH',
+                 url: 'http://127.0.0.1:8000/contract/' + id + '/',
+                 data: patch,
+             });
+             window.location.href = "http://127.0.0.1:8000/contract/all/"
+         }
+
+        </script>
+    </head>
+    <body>
+        <div style="background-color:navy;color:white;font-family:arial;font-size:20pt;font-weight:bold">Course Client</div>
+        <p/>
+        Contract Name : <br/>
+        <input type="text" id="contract_name"/>
+        <br/>
+        Contract Type : <br/>
+        <input type="text" id="contract_type"/>
+        <br/>
+        Contract Size :
+        <input type="number" id="contract_size"/>
+        <br/>
+        Contract StartDate :
+        <input type="date" id="contract_startDate"/>
+        <br/>
+        Contract EndDate :
+        <input type="date" id="contract_endDate"/>
+        <br/>
+        Frequency :
+        <select id="frequency" name="frequency">
+            <option value="Peakload">Peakload</option>
+            <option value="Baseload">Baseload</option>
+        </select>
+        <br/>
+        Price Type :
+        <select id="priceType" name="priceType">
+            <option value="Fixed">Fixed</option>
+            <option value="Floating">Floating</option>
+        </select>
+        <br/>
+        <p/>
+        <button onclick="updateCourse()">Update </button>
+        <p/>
+    </body>
+</html>

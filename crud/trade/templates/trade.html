@@ -1,0 +1,161 @@
+<html>
+    <head>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+        <script>
+             var value;
+         $(document).ready(
+
+             function() {
+                
+                $.ajax({
+            url: "http://127.0.0.1:8000/contract/",
+            type: 'GET',
+            // dataType: "json",
+            success: function( data ) {
+                var makes=[];  
+                for (var i in data) {
+                    car = data[i];
+                    
+                        $('#makeselect').append($('<option>', {
+                            value: car.id,
+                            text: car.contract_name
+                        }));
+                    
+                }
+            }
+        });
+                 showAllData();
+
+             }
+         );
+
+         function deleteData(id){
+            // alert("I am an alert box!");
+            if(confirm("You are deleting record!")){
+                $.ajax({
+                 url: "http://127.0.0.1:8000/trade/" + id + '/',
+                 type: 'DELETE',
+                 success: showAllData,
+             });
+            }
+            else{
+              
+            }
+            
+         }
+         function updateData(id){
+             window.location.href = "http://127.0.0.1:8000/trade/update/?id=" + id
+         }
+         
+        
+
+         function showAllData(){
+             $("#courses").hide();
+             $.get('http://127.0.0.1:8000/trade/', function(data){
+                 showCourses(data);
+             });
+         }
+
+         function addCourse(){
+             post_data = {
+                 'trade_date': $("#trade_date").val(),
+                 'payment_date': $("#payment_date").val(),
+                 'trade_side': $("input[name='side']:checked").val(),
+                 'trade_quantity': $("#trade_quantity").val(),
+                 'trade_price': $("#trade_price").val(),
+                 'contract_id': $("#makeselect").val(),
+                 'contract_name': $("#makeselect option:selected").text()
+
+             };
+             //console.log($("#semister").val());
+             $.post('http://127.0.0.1:8000/trade/', post_data, function(data){
+                 showAllData();
+             });
+         }
+
+         function showCourses(edatas) {
+             $("#courserows").html("")
+             $.each(edatas,
+                    function(idx, data) {
+                        $("#courserows").append("<tr><td>" +
+                                                data.id + "</td><td>" +
+                                                data.contract_id + "</td><td>" +
+                                                data.timeStamp + "</td><td>" +
+                                                data.trade_date + "</td><td>" +
+                                                data.payment_date + "</td><td>" +
+                                                data.trade_side + "</td><td>" +
+                                                data.trade_quantity + "</td><td>" +
+                                                data.trade_price + "</td><td>" +
+                                                data.amount + "</td><td>" +
+                                                data.net_size + "</td><td>" +
+                                                data.contract_name + "</td><td>" +
+                                                data.contract_size + "</td><td>" +
+                                                "<button type='button' onclick='deleteData(" + data.id +")'>Delete</button></td><td><button type='button' onclick='updateData(" + data.id +")'>Update</button></td></tr>");
+                    }
+             );
+             $("#courses").show();
+         }
+        </script>
+    </head>
+    <body>
+        <div style="background-color:navy;color:white;font-family:arial;font-size:20pt;font-weight:bold">Trade Table</div>
+        <p/>
+      
+        trade date :
+        <input type="date" id="trade_date"/>
+        <br/>
+        payment date :
+        <input type="date" id="payment_date"/>
+        <br/>
+        Trade Side :
+        <input type="radio" id="buy" name="side" value="Buy">
+        <label >Buy</label><br>
+        <input type="radio" id="sell" name="side" value="Sell">
+        <label >Sell</label><br>
+        
+        <br/>
+        Trade Quantity :
+        <input type="number" id="trade_quantity"/>
+        <br/>
+        Trade Price :
+        <input type="number" id="trade_price"/>
+        <br/>
+        <!-- Contract Name :
+        <input type="number" id="contract_name"/>
+        <br/> -->
+        Contract Name :
+        <select id="makeselect" name="frequency">
+            
+        </select>
+        <br/>
+        
+
+
+
+        <p/>
+        <button onclick="addCourse()">Add </button>
+        <p/>
+
+        <table border="1" cellpadding="5pt" id="courses">
+            <thead>
+                <tr>
+                    <th>Trade ID</th>
+                    <th>Contract ID</th>
+                    <th>Timestamp</th>
+                    <th>Trade date</th>
+                    <th>Payment date</th>
+                    <th>Trade Side</th>
+                    <th>Trade Quantity</th>
+                    <th>Trade price</th>
+                    <th>Amount</th>
+                    <th>Net Size</th>
+                    <th>Contract Name</th>
+                    <th>Contract Size</th>
+                    <th>Delete</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody id="courserows"></tbody>
+        </table>
+    </body>
+</html>

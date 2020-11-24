@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+        <script>
+         $(document).ready(
+             function() {
+                 var id = window.location.href.split('=')[1];
+                 $.get('http://127.0.0.1:8000/trade/'+id+'/', function(data){
+                     $("#trade_date").val(data.trade_date);
+                     $("#payment_date").val(data.payment_date);
+                     $("input[name='side']").val(data.trade_side)
+                     $("#trade_quantity").val(data.trade_quantity);
+                     $("#trade_price").val(data.trade_price);
+                     
+
+
+                //      'trade_date': $("#trade_date").val(),
+                //  'payment_date': $("#payment_date").val(),
+                //  'trade_side': $("input[name='side']:checked").val(),
+                //  'trade_quantity': $("#trade_quantity").val(),
+                //  'trade_price': $("#trade_price").val(),
+                //  'contract_id': $("#makeselect").val(),
+                //  'contract_name': $("#makeselect option:selected").text()
+                 });
+             }
+         );
+
+         function updateCourse(){
+             var id = window.location.href.split('=')[1];
+             patch = {
+                 'contract_name': $("#contract_name").val(),
+                 'contract_type': $("#contract_type").val(),
+                 'contract_size': $("#contract_size").val(),
+                 'contract_startDate': $("#contract_startDate").val(),
+                 'contract_endDate': $("#contract_endDate").val(),
+                 'frequency': $("#frequency").val(),
+                 'contract_priceType': $("#priceType").val(),
+             };
+             $.ajax({
+                 type: 'PATCH',
+                 url: 'http://127.0.0.1:8000/trade/' + id + '/',
+                 data: patch,
+             });
+             window.location.href = "http://127.0.0.1:8000/contract/all/"
+         }
+
+        </script>
+    </head>
+    <body>
+        <div style="background-color:navy;color:white;font-family:arial;font-size:20pt;font-weight:bold">Course Client</div>
+        <p/>
+        trade date :
+        <input type="date" id="trade_date"/>
+        <br/>
+        payment date :
+        <input type="date" id="payment_date"/>
+        <br/>
+        Trade Side :
+        <input type="radio" id="buy" name="side" value="Buy">
+        <label >Buy</label><br>
+        <input type="radio" id="sell" name="side" value="Sell">
+        <label >Female</label><br>
+        
+        <br/>
+        Trade Quantity :
+        <input type="number" id="trade_quantity"/>
+        <br/>
+        Trade Price :
+        <input type="number" id="trade_price"/>
+        <br/>
+        Contract Name :
+        <input type="number" id="contract_name"/>
+        <br/>
+        Frequency :
+        <select id="makeselect" name="frequency">
+            
+        </select>
+        <br/>
+        <p/>
+        <button onclick="updateCourse()">Update </button>
+        <p/>
+    </body>
+</html>
